@@ -1,11 +1,7 @@
-'use strict'
+"use strict"
 
-var varpinsController = require('./pinsControllerService');
+const service = require("../service/pins")
+const { createHandler } = require("../service/util")
 
-module.exports.funcpinsGET = function funcpinsGET(req, res, next) {
-  varpinsController.funcpinsGET(req.swagger.params, res, next);
-};
-
-module.exports.funcpinsPOST = function funcpinsPOST(req, res, next) {
-  varpinsController.funcpinsPOST(req.swagger.params, res, next);
-};
+module.exports.funcpinsGET = createHandler(service.listPins)
+module.exports.funcpinsPOST = createHandler(service.addPin)

@@ -1,17 +1,18 @@
 "use strict"
 
 const fs = require("fs").promises
-const http = require("http")
 const path = require("path")
 const bodyParser = require("body-parser")
 const express = require("express")
 const oasTools = require("oas-tools")
 const jsyaml = require("js-yaml")
+const pins = require("./service/pins")
 
-const start = async ({
-  port = 8080,
+const setup = async ({
   validator = true,
   strict = false,
+  loglevel = "error",
+  state = pins.init(),
 } = {}) => {
   const spec = await fs.readFile(
     path.join(__dirname, "/api/oas-doc.yaml"),
@@ -21,23 +22,23 @@ const start = async ({
 
   const app = express()
   app.use(bodyParser.json({ strict: false }))
+  app.locals = { state }
 
   oasTools.configure({
     controllers: path.join(__dirname, "./controllers"),
-    loglevel: "info",
-    strict: false,
+    loglevel,
+    strict,
     router: true,
-    validator: true,
+    validator,
   })
 
   await new Promise((resolve) => oasTools.initialize(oasDoc, app, resolve))
 
-  const server = http.createServer(app)
-  server.listen(port)
-
-  return server
+  return app
 }
 
-const stop = (server) => new Promise((resolve) => server.close(resolve))
+module.exports = { setup }
 
-module.exports = { start, stop }
+/**
+ * @typedef {import('./model/pins').State} State
+ */
