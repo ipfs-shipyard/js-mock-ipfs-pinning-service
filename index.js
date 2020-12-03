@@ -12,7 +12,12 @@ const setup = async ({
   validator = true,
   strict = false,
   loglevel = "error",
-  state = pins.init(),
+  delegates,
+  token = null,
+  state = pins.init({
+    accessToken: token,
+    delegates: delegates != null ? delegates.split(",") : undefined,
+  }),
 } = {}) => {
   const spec = await fs.readFile(
     path.join(__dirname, "/api/oas-doc.yaml"),

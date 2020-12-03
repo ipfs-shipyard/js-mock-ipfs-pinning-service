@@ -45,27 +45,40 @@ exports.notFound = notFound
 const response = (body, { status }) => ({ body, status })
 exports.response = response
 /**
- * @template State, Query
+ * @template {{accessToken: null|string }} State
+ * @template Query
  * @template {Response<any, any>} Result
  *
  * @param {(state: State, query:Query) => [State, Result] } handler
  * @returns {(request:OASRequest<State, Query, Result>, response:OASResponse<State, Result>) => void}
  */
-const createHandler = (handler) => (req, res) => {
+const createHandler = (handler) => (request, response) => {
+  const { state } = request.app.locals
+  const { accessToken } = state
+
   try {
-    const [state, { status, body }] = handler(
-      req.app.locals.state,
-      readQuery(req.swagger.params)
+    if (accessToken) {
+      const authorization = request.header("authorization")
+      if (!authorization) {
+        throw new HTTPError(401, "access token is missing")
+      } else if (authorization !== `Bearer ${accessToken}`) {
+        throw new HTTPError(401, "access token is invalid")
+      }
+    }
+
+    const [nextState, { status, body }] = handler(
+      state,
+      readQuery(request.swagger.params)
     )
 
-    res.app.locals.state = state
+    response.app.locals.state = nextState
 
-    res.status(status).send(body)
+    response.status(status).send(body)
   } catch (error) {
-    res.status(500).send({
+    response.status(error.status || 500).send({
       error: {
         reason: error.message,
-        details: error.stack,
+        details: error.details == null ? error.stack : error.details,
       },
     })
   }
@@ -88,6 +101,19 @@ const readQuery = (params) => {
 }
 
 exports.readQuery = readQuery
+
+class HTTPError extends Error {
+  /**
+   * @param {number} status
+   * @param {string} message
+   * @param {string} [details=""]
+   */
+  constructor(status, message, details = "") {
+    super(message)
+    this.status = status
+    this.details = details
+  }
+}
 
 /**
  * @template Params, Out, Inn, Query

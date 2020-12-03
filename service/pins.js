@@ -3,12 +3,19 @@
 const { ok, ok202, notFound } = require("./util")
 
 /**
+ * @param {Object} [options]
+ * @param {string|null} [options.accessToken]
+ * @param {string[]} [options.delegates]
  * @returns {State}
  */
-const init = () => ({
-  delegates: [
+const init = ({
+  accessToken = null,
+  delegates = [
     "/ip6/::1/tcp/8080/p2p/QmYVEDcquBLjoMEz6qxTSm5AfQ3uUcvHdxC8VUJs6sB1oh",
   ],
+} = {}) => ({
+  accessToken,
+  delegates,
   requestid: 0,
   pins: new Map(),
 })
@@ -141,7 +148,7 @@ const replacePin = (state, query) => {
   const [newState, response] = removePin(state, query)
   // If
   if (response.status == 202) {
-    return addPin(query, newState)
+    return addPin(newState, query)
   } else {
     return [newState, response]
   }
@@ -220,6 +227,7 @@ const deriveStatus = ({ name = "" }) => {
 
 /**
  * @typedef {Object} State
+ * @property {string|null} accessToken
  * @property {number} requestid
  * @property {string[]} delegates
  * @property {Map<string, PinStatus>} pins
