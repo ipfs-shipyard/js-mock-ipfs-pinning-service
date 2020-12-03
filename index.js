@@ -12,7 +12,7 @@ const setup = async ({
   validator = true,
   strict = false,
   loglevel = "error",
-  delegates,
+  delegates = null,
   token = null,
   state = pins.init({
     accessToken: token,

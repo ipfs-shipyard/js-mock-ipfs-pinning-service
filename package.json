@@ -1,5 +1,5 @@
 {
-  "name": "js-mock-ipfs-pinning-service",
+  "name": "mock-ipfs-pinning-service",
   "version": "0.1.2",
   "description": "mock ipfs pinning service",
   "main": "index.js",

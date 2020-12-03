@@ -6,7 +6,7 @@ const http = require("http")
 const { setup } = require(".")
 
 const main = async ({
-  token = "secret",
+  token = null,
   delegates = null,
   port = 3000,
   loglevel = "error",
