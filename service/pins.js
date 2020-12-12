@@ -101,6 +101,7 @@ const createPin = (options, state) => {
  * @returns {[State, ListPinsResult]}
  */
 const listPins = (state, query) => {
+  console.log(query)
   const limit = query.limit == null ? Infinity : query.limit
   const results = []
   for (const entry of state.pins.values()) {
@@ -182,13 +183,13 @@ exports.removePin = removePin
  */
 const match = (query, { pin, status, created }) => {
   // Workarounds https://github.com/ipfs/go-ipfs/issues/7827
-  const queryStatus = [].concat(
-    ...query.status.map((status) => status.split(","))
-  )
+  const statuses = [].concat(...query.status.map(($) => $.split(",")))
+  const cids = query.cid && [].concat(...query.cid.map(($) => $.split(",")))
+
   const matched =
-    (query.cid == null || query.cid.includes(pin.cid)) &&
+    (query.cid == null || cids.includes(pin.cid)) &&
     (query.name == null || query.name == pin.name) &&
-    (query.status == null || queryStatus.includes(status)) &&
+    (query.status == null || statuses.includes(status)) &&
     (query.before == null || Date.parse(created) < Date.parse(query.before)) &&
     (query.after == null || Date.parse(created) > Date.parse(query.after)) &&
     (query.meta == null || matchMetadata(query.meta, pin.meta || {}))
