@@ -181,10 +181,14 @@ exports.removePin = removePin
  * @returns {boolean}
  */
 const match = (query, { pin, status, created }) => {
+  // Workarounds https://github.com/ipfs/go-ipfs/issues/7827
+  const queryStatus = [].concat(
+    ...query.status.map((status) => status.split(","))
+  )
   const matched =
     (query.cid == null || query.cid.includes(pin.cid)) &&
     (query.name == null || query.name == pin.name) &&
-    (query.status == null || query.status.includes(status)) &&
+    (query.status == null || queryStatus.includes(status)) &&
     (query.before == null || Date.parse(created) < Date.parse(query.before)) &&
     (query.after == null || Date.parse(created) > Date.parse(query.after)) &&
     (query.meta == null || matchMetadata(query.meta, pin.meta || {}))
