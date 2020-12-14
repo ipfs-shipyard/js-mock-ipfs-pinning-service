@@ -101,7 +101,6 @@ const createPin = (options, state) => {
  * @returns {[State, ListPinsResult]}
  */
 const listPins = (state, query) => {
-  console.log(query)
   const limit = query.limit == null ? Infinity : query.limit
   const results = []
   for (const entry of state.pins.values()) {
