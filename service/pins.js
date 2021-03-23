@@ -189,8 +189,8 @@ const match = (query, { pin, status, created }) => {
     (query.cid == null || cids.includes(pin.cid)) &&
     (query.name == null || query.name == pin.name) &&
     (query.status == null || statuses.includes(status)) &&
-    (query.before == null || Date.parse(created) < Date.parse(query.before)) &&
-    (query.after == null || Date.parse(created) > Date.parse(query.after)) &&
+    (query.before == null || parseDate(created) < parseDate(query.before)) &&
+    (query.after == null || parseDate(created) > parseDate(query.after)) &&
     (query.meta == null || matchMetadata(query.meta, pin.meta || {}))
 
   return matched
@@ -227,6 +227,22 @@ const deriveStatus = ({ name = "" }) => {
   }
 
   return STATUS.queued
+}
+
+/**
+ * Parse the input using Date.parse, with special casing if the input is already a Date.
+ * 
+ * @param {Date|string} d - a Date object or ISO-formatted date string.
+ * @returns {number} - the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC
+ */
+const parseDate = (d) => {
+  if (d instanceof Date) {
+    // Calling Date.parse on a Date instance causes the milliseconds to be thrown away,
+    // so e.g. a date representing 1616522896307 becomes 1616522896000.
+    // Calling toISOString and parsing _that_ seems to work. 
+    return Date.parse(d.toISOString())
+  }
+  return Date.parse(d)
 }
 
 /**
