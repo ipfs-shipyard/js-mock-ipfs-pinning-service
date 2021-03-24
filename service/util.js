@@ -94,7 +94,7 @@ exports.createHandler = createHandler
 const readQuery = (params) => {
   const query = /** @type {T} */ ({})
   for (const [key, { value }] of Object.entries(params)) {
-    query[key] = value
+    query[/** @type {keyof T} */(key)] = value
   }
 
   return query

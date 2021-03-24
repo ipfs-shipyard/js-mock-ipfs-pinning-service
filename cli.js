@@ -1,10 +1,22 @@
 #! /usr/bin/env node
 
 const yargs = require("yargs")
-const { hideBin } = require("yargs/helpers")
+/** @type {(args:string[]) => string[]} */
+// @ts-ignore
+const hideBin = require("yargs/helpers").hideBin
 const http = require("http")
 const { setup } = require(".")
 
+/**
+ * @typedef Options options
+ * @property {string|null} [token]
+ * @property {string|null} [delegates]
+ * @property {number} [port]
+ * @property {"info"|"error"} [loglevel]
+ * @property {boolean} [strict]
+ * 
+ * @param {Options} options
+ */
 const main = async ({
   token = null,
   delegates = null,
@@ -15,7 +27,9 @@ const main = async ({
   const service = await setup({ strict, loglevel, token, delegates })
 
   const server = http.createServer(service)
-  service.listen(port)
+  server.listen(port)
 }
 
-main(yargs(hideBin(process.argv)).argv)
+/** @type {import('yargs').Argv<Options>} */
+const cli = yargs(hideBin(process.argv))
+main(cli.argv)
