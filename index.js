@@ -4,6 +4,7 @@ const fs = require("fs").promises
 const path = require("path")
 const bodyParser = require("body-parser")
 const express = require("express")
+const cors = require("cors")
 const oasTools = require("oas-tools")
 const jsyaml = require("js-yaml")
 const pins = require("./service/pins")
@@ -26,6 +27,7 @@ const setup = async ({
   const oasDoc = jsyaml.safeLoad(spec)
 
   const app = express()
+  app.use(cors())
   app.use(bodyParser.json({ strict: false }))
   app.locals = { state }
 
