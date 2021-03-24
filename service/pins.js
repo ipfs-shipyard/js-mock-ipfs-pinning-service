@@ -233,14 +233,11 @@ const deriveStatus = ({ name = "" }) => {
  * Parse the input using Date.parse, with special casing if the input is already a Date.
  * 
  * @param {Date|string} d - a Date object or ISO-formatted date string.
- * @returns {number} - the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC
+ * @returns {number|Date} - the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC, or a Date instance
  */
 const parseDate = (d) => {
-  if (d instanceof Date) {
-    // Calling Date.parse on a Date instance causes the milliseconds to be thrown away,
-    // so e.g. a date representing 1616522896307 becomes 1616522896000.
-    // Calling toISOString and parsing _that_ seems to work. 
-    return Date.parse(d.toISOString())
+  if (d instanceof Date) { 
+    return d
   }
   return Date.parse(d)
 }
