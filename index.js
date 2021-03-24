@@ -5,10 +5,22 @@ const path = require("path")
 const bodyParser = require("body-parser")
 const express = require("express")
 const cors = require("cors")
+// @ts-ignore
 const oasTools = require("oas-tools")
 const jsyaml = require("js-yaml")
 const pins = require("./service/pins")
 
+/**
+ * @typedef {import('./service/pins').State} State
+ * 
+ * @param {object} [options]
+ * @param {string|null} [options.token] - Access token to validate against.
+ * @param {State} [options.state] - initial state to start with.
+ * @param {boolean} [options.validator]
+ * @param {boolean} [options.strict]
+ * @param {"error"|"info"} [options.loglevel]
+ * @param {string|null} [options.delegates]
+ */
 const setup = async ({
   validator = true,
   strict = false,
@@ -45,7 +57,3 @@ const setup = async ({
 }
 
 module.exports = { setup }
-
-/**
- * @typedef {import('./model/pins').State} State
- */

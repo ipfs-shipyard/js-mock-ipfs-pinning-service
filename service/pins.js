@@ -182,8 +182,13 @@ exports.removePin = removePin
  */
 const match = (query, { pin, status, created }) => {
   // Workarounds https://github.com/ipfs/go-ipfs/issues/7827
-  const statuses = [].concat(...query.status.map(($) => $.split(",")))
-  const cids = query.cid && [].concat(...query.cid.map(($) => $.split(",")))
+  const statuses = 
+    /** @type {string[]} */([]).concat(...(query.status || []).map(($) => $.split(",")))
+  
+  const cids = query.cid
+    ? /** @type {string[]} */([]).concat(...query.cid.map(($) => $.split(",")))
+    : []
+
 
   const matched =
     (query.cid == null || cids.includes(pin.cid)) &&
