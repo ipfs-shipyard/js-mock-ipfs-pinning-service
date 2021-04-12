@@ -2,6 +2,7 @@
   "name": "mock-ipfs-pinning-service",
   "version": "0.1.2",
   "description": "mock ipfs pinning service",
+  "homepage": "https://github.com/ipfs-shipyard/js-mock-ipfs-pinning-service",
   "main": "index.js",
   "bin": "./cli.js",
   "types": "./dist/indx.d.ts",
@@ -38,5 +39,9 @@
     "@types/express": "4.17.11",
     "@types/yargs": "16.0.0",
     "typescript": "4.2.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ipfs-shipyard/js-mock-ipfs-pinning-service.git"
+  },
 }
