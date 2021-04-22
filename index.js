@@ -36,7 +36,7 @@ const setup = async ({
     path.join(__dirname, "/api/oas-doc.yaml"),
     "utf8"
   )
-  const oasDoc = jsyaml.safeLoad(spec)
+  const oasDoc = jsyaml.load(spec)
 
   const app = express()
   app.use(cors())
