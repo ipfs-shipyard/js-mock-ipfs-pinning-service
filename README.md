@@ -13,11 +13,12 @@ npm install git://github.com/ipfs-shipyard/js-mock-ipfs-pinning-service.git
 ```js
 const http = require("http")
 const { setup } = require("mock-ipfs-pinning-service")
+const port = 3000
 
 const main = async () => {
   const service = await setup({ token: "secret" })
   const server = http.createServer(http)
-  server.listen(8080)
+  server.listen(port)
 }
 ```
 
@@ -25,17 +26,21 @@ State of the pins is exposed via `service.locals.state` which you can monkeypatc
 
 ### CLI Usage
 
-You can also start the mock server from the cli:
+You can start the mock server from the command line:
 
 ```sh
-mock-ipfs-pinning-service --port 8080 --token secret
+npx mock-ipfs-pinning-service --port 3000 --token secret
 ```
 
 If token is not passed it will not preform authentification.
 
-### Debugging
+### Log levels
 
-Append `--loglevel debug` to see raw JSON sent on the wire (both received request and produced response). 
+Pass:
+
+- `--loglevel error` to only print errors
+- `--loglevel info` to print each JSON request and response (default on CLI)
+- `--loglevel debug` to see low level OpenAPI validation details
 
 ### Mocking specific `PinStatus` response
 

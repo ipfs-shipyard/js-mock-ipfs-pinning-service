@@ -9,8 +9,10 @@ const { ok, ok202, notFound } = require("./util")
  * @returns {State}
  */
 const init = ({
-  accessToken = null,
+  accessToken = null, 
   delegates = [
+    "/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
+    "/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
     "/ip6/::1/tcp/8080/p2p/QmYVEDcquBLjoMEz6qxTSm5AfQ3uUcvHdxC8VUJs6sB1oh",
   ],
 } = {}) => ({
