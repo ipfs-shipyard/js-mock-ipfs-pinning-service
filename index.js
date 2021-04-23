@@ -57,7 +57,11 @@ const setup = async ({
     // print JSON for each request and response
     // ('debug' will print them via oasTools, so only info here)
     // @ts-ignore
-    morganBody(app)
+    morganBody(app, {
+      logAllReqHeader: true,
+      logAllResHeader: true,
+      maxBodyLength: 100000
+    })
   }
 
   await new Promise((resolve) => oasTools.initialize(oasDoc, app, resolve))
