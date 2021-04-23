@@ -53,3 +53,29 @@ It is possible to overide this behavior per pin request by prefixing `Pin.name` 
 - `pinning-test1` → `PinStatus.status="pinning"` → `pin remote add` hangs (needs `--background`)
 - `pinned-test2` → `PinStatus.status="pinned"` → `pin remote add` responds instantly
 - `failed-test3` → `PinStatus.status="failed"`→ `pin remote add` responds instantly
+
+### Debugging client in go-ipfs (`ipfs pin remote`)
+
+One can use this mock service with client included in go-ipfs to debug its behavior:
+
+```console
+// start mock service
+$ npx mock-ipfs-pinning-service --port 5000 --token secret --loglevel info
+
+// then in other console
+$ ipfs pin remote service add mock "http://127.0.0.1:5000" secret
+$ ipfs pin remote service ls --stat
+mock http://127.0.0.1:5000 0/0/0/1
+```
+
+The first console will show what happened on the wire:
+
+```
+Request: GET /pins?limit=1&status=queued headers[host=127.0.0.1:5000;user-agent=go-pinning-service-http-client;accept=application/json;authorization=Bearer secret;accept-encoding=gzip] at Fri Apr 23 2021 19:58:49 GMT+0200, IP: ::ffff:127.0.0.1, User Agent: go-pinning-service-http-client
+Response Body:
+{
+	"count": 0,
+	"results": []
+}
+Response: 200 3.183 ms  headers[x-powered-by=Express;access-control-allow-origin=*;content-type=application/json; charset=utf-8;content-length=24;etag=W/"18-sS5FLbfK694W6H4gsKxYsIoy1Pk"]
+```
