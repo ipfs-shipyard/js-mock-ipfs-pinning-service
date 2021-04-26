@@ -13,11 +13,12 @@ npm install git://github.com/ipfs-shipyard/js-mock-ipfs-pinning-service.git
 ```js
 const http = require("http")
 const { setup } = require("mock-ipfs-pinning-service")
+const port = 3000
 
 const main = async () => {
   const service = await setup({ token: "secret" })
   const server = http.createServer(http)
-  server.listen(8080)
+  server.listen(port)
 }
 ```
 
@@ -25,17 +26,21 @@ State of the pins is exposed via `service.locals.state` which you can monkeypatc
 
 ### CLI Usage
 
-You can also start the mock server from the cli:
+You can start the mock server from the command line:
 
 ```sh
-mock-ipfs-pinning-service --port 8080 --token secret
+npx mock-ipfs-pinning-service --port 3000 --token secret
 ```
 
 If token is not passed it will not preform authentification.
 
-### Debugging
+### Log levels
 
-Append `--loglevel debug` to see raw JSON sent on the wire (both received request and produced response). 
+Pass:
+
+- `--loglevel error` to only print errors
+- `--loglevel info` to print each JSON request and response (default on CLI)
+- `--loglevel debug` to see low level OpenAPI validation details
 
 ### Mocking specific `PinStatus` response
 
@@ -48,3 +53,29 @@ It is possible to overide this behavior per pin request by prefixing `Pin.name` 
 - `pinning-test1` → `PinStatus.status="pinning"` → `pin remote add` hangs (needs `--background`)
 - `pinned-test2` → `PinStatus.status="pinned"` → `pin remote add` responds instantly
 - `failed-test3` → `PinStatus.status="failed"`→ `pin remote add` responds instantly
+
+### Debugging client in go-ipfs (`ipfs pin remote`)
+
+One can use this mock service with client included in go-ipfs to debug its behavior:
+
+```console
+// start mock service
+$ npx mock-ipfs-pinning-service --port 5000 --token secret --loglevel info
+
+// then in other console
+$ ipfs pin remote service add mock "http://127.0.0.1:5000" secret
+$ ipfs pin remote service ls --stat
+mock http://127.0.0.1:5000 0/0/0/1
+```
+
+The first console will show what happened on the wire:
+
+```
+Request: GET /pins?limit=1&status=queued headers[host=127.0.0.1:5000;user-agent=go-pinning-service-http-client;accept=application/json;authorization=Bearer secret;accept-encoding=gzip] at Fri Apr 23 2021 19:58:49 GMT+0200, IP: ::ffff:127.0.0.1, User Agent: go-pinning-service-http-client
+Response Body:
+{
+	"count": 0,
+	"results": []
+}
+Response: 200 3.183 ms  headers[x-powered-by=Express;access-control-allow-origin=*;content-type=application/json; charset=utf-8;content-length=24;etag=W/"18-sS5FLbfK694W6H4gsKxYsIoy1Pk"]
+```

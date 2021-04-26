@@ -9,9 +9,12 @@ const { ok, ok202, notFound } = require("./util")
  * @returns {State}
  */
 const init = ({
-  accessToken = null,
+  accessToken = null, 
   delegates = [
-    "/ip6/::1/tcp/8080/p2p/QmYVEDcquBLjoMEz6qxTSm5AfQ3uUcvHdxC8VUJs6sB1oh",
+    "/ip4/203.0.113.42/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
+    "/ip6/2001:db8::42/tcp/8080/p2p/QmYVEDcquBLjoMEz6qxTSm5AfQ3uUcvHdxC8VUJs6sB1oh",
+    "/dns4/node0.example.net/tcp/443/wss/p2p/QmZMxNdpMkewiVZLMRxaNxUeZpDUb34pWjZ1kZvsd16Zic",
+    "/dnsaddr/node1.example.org/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
   ],
 } = {}) => ({
   accessToken,

@@ -6,6 +6,8 @@ const bodyParser = require("body-parser")
 const express = require("express")
 const cors = require("cors")
 // @ts-ignore
+const morganBody = require("morgan-body")
+// @ts-ignore
 const oasTools = require("oas-tools")
 const jsyaml = require("js-yaml")
 const pins = require("./service/pins")
@@ -18,7 +20,7 @@ const pins = require("./service/pins")
  * @param {State} [options.state] - initial state to start with.
  * @param {boolean} [options.validator]
  * @param {boolean} [options.strict]
- * @param {"error"|"info"} [options.loglevel]
+ * @param {"error"|"info"|"debug"} [options.loglevel]
  * @param {string|null} [options.delegates]
  */
 const setup = async ({
@@ -50,6 +52,17 @@ const setup = async ({
     router: true,
     validator,
   })
+
+  if (loglevel === 'info') {
+    // print JSON for each request and response
+    // ('debug' will print them via oasTools, so only info here)
+    // @ts-ignore
+    morganBody(app, {
+      logAllReqHeader: true,
+      logAllResHeader: true,
+      maxBodyLength: 100000
+    })
+  }
 
   await new Promise((resolve) => oasTools.initialize(oasDoc, app, resolve))
 
