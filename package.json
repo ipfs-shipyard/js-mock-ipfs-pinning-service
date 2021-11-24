@@ -1,6 +1,6 @@
 {
   "name": "mock-ipfs-pinning-service",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "mock ipfs pinning service",
   "homepage": "https://github.com/ipfs-shipyard/js-mock-ipfs-pinning-service",
   "main": "index.js",
