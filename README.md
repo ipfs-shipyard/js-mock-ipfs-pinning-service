@@ -24,6 +24,8 @@ const main = async () => {
 
 State of the pins is exposed via `service.locals.state` which you can monkeypatch or replace. Each new request will be served based on that value. All requests perform that perform state updates do them in immutable style and swap the whole value, in other words references are guaranteed to not mutate.
 
+You can see the status of the server and test individual functions from the SwaggerUI by navigating to `http://localhost:${port}/docs/`, switching  _Server_ to `/` and then entering access token under _Authorize_ button.
+
 ### CLI Usage
 
 You can start the mock server from the command line:
