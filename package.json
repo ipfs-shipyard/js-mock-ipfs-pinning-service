@@ -9,6 +9,7 @@
   "files": [
     "dist",
     "service",
+    "controllers",
     "api",
     "*.js",
     "*.ts"
