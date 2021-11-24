@@ -5,7 +5,7 @@ Implementation of in-memory [IPFS Pinning Service API](https://ipfs.github.io/pi
 ## Install
 
 ```
-npm install git://github.com/ipfs-shipyard/js-mock-ipfs-pinning-service.git
+npm i mock-ipfs-pinning-service
 ```
 
 ## Usage
