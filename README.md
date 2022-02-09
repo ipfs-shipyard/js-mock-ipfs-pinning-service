@@ -20,7 +20,7 @@ const main = async () => {
    */
   const server = await setup({ token: "secret" })
   server.listen(port, () => {
-    console.log(`server running on port ${port}`);
+    console.log(`server running on port ${port}`)
   })
 }
 ```
