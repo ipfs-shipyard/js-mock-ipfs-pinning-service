@@ -5,19 +5,20 @@ Implementation of in-memory [IPFS Pinning Service API](https://ipfs.github.io/pi
 ## Install
 
 ```
-npm i mock-ipfs-pinning-service
+npm i -D mock-ipfs-pinning-service @types/express
 ```
 
 ## Usage
 
 ```js
-const http = require("http")
 const { setup } = require("mock-ipfs-pinning-service")
 const port = 3000
 
 const main = async () => {
-  const service = await setup({ token: "secret" })
-  const server = http.createServer(http)
+  /**
+   * @type {import('express').Application}
+   */
+  const server = await setup({ token: "secret" })
   server.listen(port)
 }
 ```
