@@ -18,11 +18,38 @@ const main = async () => {
   /**
    * @type {import('express').Application}
    */
-  const server = await setup({ token: "secret" })
-  server.listen(port, () => {
+  const service = await setup({ token: "secret" })
+  const server = service.listen(port, () => {
     console.log(`server running on port ${port}`)
   })
+
+  // Express server cleanup handling.
+  const cleanup = () => {
+    server.close((err) => {
+      if (!err || !err?.code === 'ERR_SERVER_NOT_RUNNING') {
+        console.log(`server stopped listening on port ${port}`)
+      }
+      if (err) {
+        console.error(err)
+      }
+    })
+  }
+
+  // And you'll want to make sure you close the server when your process exits
+  process.on('beforeExit', cleanup)
+  process.on('SIGTERM', cleanup)
+  process.on('SIGINT', cleanup)
+  process.on('SIGHUP', cleanup)
+
+  // To prevent duplicated cleanup, remove the process listeners on server close.
+  server.on('close', () => {
+    process.off('beforeExit', cleanup)
+    process.off('SIGTERM', cleanup)
+    process.off('SIGINT', cleanup)
+    process.off('SIGHUP', cleanup)
+  })
 }
+
 ```
 
 State of the pins is exposed via `service.locals.state` which you can monkeypatch or replace. Each new request will be served based on that value. All requests perform that perform state updates do them in immutable style and swap the whole value, in other words references are guaranteed to not mutate.
