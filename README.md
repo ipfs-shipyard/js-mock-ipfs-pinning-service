@@ -19,7 +19,9 @@ const main = async () => {
    * @type {import('express').Application}
    */
   const server = await setup({ token: "secret" })
-  server.listen(port)
+  server.listen(port, () => {
+    console.log(`server running on port ${port}`);
+  })
 }
 ```
 
