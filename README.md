@@ -26,7 +26,7 @@ const main = async () => {
   // Express server cleanup handling.
   const cleanup = () => {
     server.close((err) => {
-      if (!err || !err?.code === 'ERR_SERVER_NOT_RUNNING') {
+      if (!err || err?.code !== 'ERR_SERVER_NOT_RUNNING') {
         console.log(`server stopped listening on port ${port}`)
       }
       if (err) {
