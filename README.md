@@ -5,26 +5,11 @@ Implementation of in-memory [IPFS Pinning Service API](https://ipfs.github.io/pi
 ## Install
 
 ```
-npm i mock-ipfs-pinning-service
+npm i -D mock-ipfs-pinning-service @types/express
 ```
 
 ## Usage
 
-```js
-const http = require("http")
-const { setup } = require("mock-ipfs-pinning-service")
-const port = 3000
-
-const main = async () => {
-  const service = await setup({ token: "secret" })
-  const server = http.createServer(http)
-  server.listen(port)
-}
-```
-
-State of the pins is exposed via `service.locals.state` which you can monkeypatch or replace. Each new request will be served based on that value. All requests perform that perform state updates do them in immutable style and swap the whole value, in other words references are guaranteed to not mutate.
-
-You can see the status of the server and test individual functions from the SwaggerUI by navigating to `http://localhost:${port}/docs/`, switching  _Server_ to `/` and then entering access token under _Authorize_ button.
 
 ### CLI Usage
 
@@ -35,6 +20,45 @@ npx mock-ipfs-pinning-service --port 3000 --token secret
 ```
 
 If token is not passed it will not preform authentification.
+
+### Code Usage
+
+```js
+const { setup } = require('mock-ipfs-pinning-service')
+const port = 3005
+
+const main = async () => {
+  /**
+   * @type {import('express').Application}
+   */
+  const service = await setup({ token: 'secret' })
+  const server = service.listen(port, () => {
+    console.log(`server running on port ${port}`)
+  })
+
+  const cleanupEvents = ['beforeExit', 'SIGTERM', 'SIGINT', 'SIGHUP']
+
+  // Express server cleanup handling.
+  const cleanup = () => {
+    // To prevent duplicated cleanup, remove the process listeners on cleanup
+    cleanupEvents.forEach((event) => process.off(event, cleanup))
+    server.close((err) => {
+      if (err) {
+        console.error(err)
+        return
+      }
+      console.log(`server stopped listening on port ${port}`)
+    })
+  }
+  // close the server when your process exits
+  cleanupEvents.forEach((event) => process.on(event, cleanup))
+}
+
+```
+
+State of the pins is exposed via `service.locals.state` which you can monkeypatch or replace. Each new request will be served based on that value. All requests perform that perform state updates do them in immutable style and swap the whole value, in other words references are guaranteed to not mutate.
+
+You can see the status of the server and test individual functions from the SwaggerUI by navigating to `http://localhost:${port}/docs/`, switching  _Server_ to `/` and then entering access token under _Authorize_ button.
 
 ### Log levels
 
