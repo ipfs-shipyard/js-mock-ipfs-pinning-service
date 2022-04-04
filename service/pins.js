@@ -9,7 +9,7 @@ const { ok, ok202, notFound } = require("./util")
  * @returns {State}
  */
 const init = ({
-  accessToken = null, 
+  accessToken = null,
   delegates = [
     "/ip4/203.0.113.42/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
     "/ip6/2001:db8::42/tcp/8080/p2p/QmYVEDcquBLjoMEz6qxTSm5AfQ3uUcvHdxC8VUJs6sB1oh",
@@ -184,14 +184,9 @@ exports.removePin = removePin
  * @returns {boolean}
  */
 const match = (query, { pin, status, created }) => {
-  // Workarounds https://github.com/ipfs/go-ipfs/issues/7827
-  const statuses = 
-    /** @type {string[]} */([]).concat(...(query.status || []).map(($) => $.split(",")))
-  
-  const cids = query.cid
-    ? /** @type {string[]} */([]).concat(...query.cid.map(($) => $.split(",")))
-    : []
-
+  // Workarounds https://github.com/oas-tools/oas-tools/issues/248
+  const statuses = parseStringArr(query.status)
+  const cids = parseStringArr(query.cid)
 
   const matched =
     (query.cid == null || cids.includes(pin.cid)) &&
@@ -239,15 +234,31 @@ const deriveStatus = ({ name = "" }) => {
 
 /**
  * Parse the input using Date.parse, with special casing if the input is already a Date.
- * 
+ *
  * @param {Date|string} d - a Date object or ISO-formatted date string.
  * @returns {number|Date} - the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC, or a Date instance
  */
 const parseDate = (d) => {
-  if (d instanceof Date) { 
+  if (d instanceof Date) {
     return d
   }
   return Date.parse(d)
+}
+
+/**
+ * @param {string | string[]} [s]
+ * @returns {string[]}
+ */
+const parseStringArr = (s) => {
+  if (s == null) {
+    return []
+  }
+
+  if (typeof s === 'string') {
+    return s.split(',')
+  }
+
+  return s
 }
 
 /**
