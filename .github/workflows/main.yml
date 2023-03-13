@@ -19,7 +19,8 @@ jobs:
     strategy:
       matrix:
         node-version:
-          - 15
+          - 16.x
+          - 18.x
     steps:
       - uses: actions/checkout@v2
 
@@ -30,7 +31,7 @@ jobs:
 
       - name: Restore yarn cache
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v2
         id: yarn-cache
@@ -56,7 +57,7 @@ jobs:
 
       - name: Restore yarn cache
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v2
         id: yarn-cache
@@ -72,8 +73,11 @@ jobs:
       - name: Build
         run: yarn build
 
-      - name: Publish
-        uses: mikeal/merge-release@master
+      - name: Run semantic release
+        run: |
+          git config user.name "ipfs-gui-bot"
+          git config user.email "108953096+ipfs-gui-bot@users.noreply.github.com"
+          npx semantic-release --ci
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
