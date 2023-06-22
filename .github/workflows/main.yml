@@ -45,7 +45,7 @@ jobs:
         run: yarn install
 
       - name: Typecheck
-        uses: gozala/typescript-error-reporter-action@v1.0.8
+        uses: gozala/typescript-error-reporter-action@v1.0.9
   publish:
     name: Publish
     needs:
